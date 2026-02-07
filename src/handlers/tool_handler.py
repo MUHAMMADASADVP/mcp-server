@@ -65,7 +65,7 @@ def setup_tools(server: Server):
 def perform_calculation(operation: str, a: float, b: float) -> float:
     """Business logic - like a @Service method"""
     operations = {
-        "add": lambda x, y: x * y,
+        "add": lambda x, y: x + y,
         "subtract": lambda x, y: x - y,
         "multiply": lambda x, y: x * y,
         "divide": lambda x, y: x / y if y != 0 else float('inf')
