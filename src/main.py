@@ -8,7 +8,7 @@ from mcp.server import Server
 from mcp.types import Tool, TextContent
 
 # Use package-relative import so module runs with `python -m src.main`
-from .tools import ToolRegistry, CalculatorToolHandler
+from .tools import ToolRegistry, CalculatorToolHandler, ExpenseTrackerToolHandler
 
 # Configure logging
 logging.basicConfig(
@@ -29,6 +29,7 @@ def setup_tools(server: Server):
     
     # Register all tool handlers
     registry.register(CalculatorToolHandler())
+    registry.register(ExpenseTrackerToolHandler())
     # Add more handlers here as you create them:
     # registry.register(WeatherToolHandler())
     # registry.register(DatabaseToolHandler())
