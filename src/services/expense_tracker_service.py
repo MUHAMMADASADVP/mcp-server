@@ -5,6 +5,9 @@ Like Spring's @Service
 """
 import httpx
 import logging
+import boto3
+import os
+from botocore.exceptions import ClientError
 from typing import List, Dict, Any
 from ..models.expense_models import (
     ExpenseTrackerInput, 
@@ -16,14 +19,30 @@ from ..models.expense_models import (
 
 logger = logging.getLogger(__name__)
 
+def get_base_url():
+    """
+    Fetch BASE_URL from AWS Parameter Store
+    Falls back to environment variable if needed
+    """
+    try:
+        ssm = boto3.client("ssm", region_name="ap-southeast-2")
+        response = ssm.get_parameter(
+            Name="/exptrac.backend.url"
+        )
+        return response["Parameter"]["Value"]
+    
+    except ClientError as e:
+        logger.warning(f"SSM fetch failed, trying env var: {e}")
+        return os.getenv("BASE_URL")
+
 class ExpenseTrackerService:
     """Service for expense tracker operations"""
     
-    BASE_URL = "https://exptrac-1uzl.onrender.com/api"
     TIMEOUT = 10
-    
+
     def __init__(self):
-        logger.info("ExpenseTrackerService initialized")
+        self.BASE_URL = get_base_url()
+        logger.info(f"ExpenseTrackerService initialized with BASE_URL={self.BASE_URL}")
     
     def handle_action(self, input_data: ExpenseTrackerInput) -> ExpenseTrackerOutput:
         """
